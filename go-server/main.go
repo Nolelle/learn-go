@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func helloHandler(res http.ResponseWriter, req http.Request) {
+func helloHandler(res http.ResponseWriter, req *http.Request) {
 	if req.URL.Path != "/hello" {
 		http.Error(res, "404 not found", http.StatusNotFound)
 		return
@@ -15,6 +15,19 @@ func helloHandler(res http.ResponseWriter, req http.Request) {
 	if req.Method != "GET" {
 		http.Error(res, "method is not supported", http.StatusNotFound)
 	}
+	fmt.Fprintf(res, "hello!")
+}
+
+func formHandler(res http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
+		fmt.Fprintf(res, "ParseForm() err: %v", err)
+		return
+	}
+	fmt.Fprintf(res, "POST request sucessful")
+	name := req.FormValue("name")
+	address := req.FormValue("address")
+	fmt.Fprintf(res, "Name = %s\n", name)
+	fmt.Fprintf(res, "Address = %s\n", address)
 }
 
 func main() {
